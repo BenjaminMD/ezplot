@@ -48,3 +48,6 @@ def SinglePDF(r, gcalc, gobs, save_file_path):
     ax.scatter(r, gobs, 'o', label='gobs')
     ax.set_xlim(r.min(), r.max())
     ax.legend()
+
+    plt.savefig(f'{save_file_path}.pdf', dpi=300)
+    plt.savefig(f'{save_file_path}.png', dpi=300)
