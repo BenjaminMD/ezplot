@@ -30,24 +30,24 @@ def SingleFigure(x_label, y_label):
     ax.grid(True)
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
-    return ax
+    return fig, ax
 
 
-def SinglePDF(r, gcalc, gobs, save_file_path):
-    ax = SingleFigure(r'G($r$) [-]', r'$r$ [Å$]')
+def SinglePDF(r, gcalc, gobs, filepath):
+    fig, ax = SingleFigure(r'G($r$) [-]', r'$r$ [Å]')
 
     gdiff = gobs - gcalc
-    span = (gobs.max() - gobs.min(), gcalc.max() - gcalc.min()).max()
-    baseline = (gobs.min(), gcalc.min()).min() - span/10
+    span = max(gobs.max() - gobs.min(), gcalc.max() - gcalc.min()).max()
+    baseline = min(gobs.min(), gcalc.min()) - span/10
 
     ax.scatter(r, gobs, 11, "0.0", lw=1.5)
     ax.scatter(r, gobs, 11, "1.0", lw=0)
     ax.scatter(r, gobs, 10, "C4", lw=0, label='obs', alpha=0.1)
     ax.plot(r, gcalc, '-', label='calc')
     ax.plot(r, gdiff + baseline, '-', label='diff', color='green')
-    ax.scatter(r, gobs, 'o', label='gobs')
+#    ax.scatter(r, gobs, 'o', label='gobs')
     ax.set_xlim(r.min(), r.max())
     ax.legend()
 
-    plt.savefig(f'{save_file_path}.pdf', dpi=300)
-    plt.savefig(f'{save_file_path}.png', dpi=300)
+    plt.savefig(f'{filepath}.pdf', dpi=300)
+    plt.savefig(f'{filepath}.png', dpi=300)
