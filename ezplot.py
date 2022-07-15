@@ -2,7 +2,7 @@ from matplotlib.gridspec import GridSpec
 import matplotlib.pyplot as plt
 
 
-def PlotDefaults(COLS, ROWS):
+def _plotdefaults(COLS, ROWS):
     φ = (1 + 5**0.5)/2
     cm = 2.54
 
@@ -25,7 +25,7 @@ def PlotDefaults(COLS, ROWS):
 
 
 def SingleFigure(x_label, y_label):
-    fig, gs = PlotDefaults(1, 1)
+    fig, gs = _plotdefaults(1, 1)
     ax = fig.add_subplot(gs[0, 0])
     ax.grid(True)
     ax.set_xlabel(x_label)
