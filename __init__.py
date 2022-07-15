@@ -1,1 +1,1 @@
-from .ezplot import PlotDefaults
+from .ezplot import single_pdf

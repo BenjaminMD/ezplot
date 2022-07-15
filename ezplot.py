@@ -24,7 +24,7 @@ def _plotdefaults(COLS, ROWS):
     return fig, gs
 
 
-def SingleFigure(x_label, y_label):
+def _single_figure(x_label, y_label):
     fig, gs = _plotdefaults(1, 1)
     ax = fig.add_subplot(gs[0, 0])
     ax.grid(True)
@@ -33,8 +33,8 @@ def SingleFigure(x_label, y_label):
     return fig, ax
 
 
-def SinglePDF(r, gcalc, gobs, filepath):
-    fig, ax = SingleFigure(r'G($r$) [-]', r'$r$ [Å]')
+def single_pdf(r, gcalc, gobs, filepath):
+    fig, ax = _single_figure(r'G($r$) [-]', r'$r$ [Å]')
 
     gdiff = gobs - gcalc
     span = max(gobs.max() - gobs.min(), gcalc.max() - gcalc.min()).max()
