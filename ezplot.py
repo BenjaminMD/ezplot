@@ -1,7 +1,7 @@
 from matplotlib.gridspec import GridSpec
 import matplotlib.pyplot as plt
 from typing import Tuple, Union
-from nptyping import NDArray, Shape, Float
+from nptyping import NDArray, Shape, Float, String
 
 
 def _plotdefaults(COLS, ROWS) -> Tuple[plt.Figure, GridSpec]:
@@ -41,7 +41,7 @@ def _single_figure(x_label, y_label) -> Tuple[plt.Figure, plt.Axes]:
 def single_plot(
         xs: NDArray[Shape["1, Dim"], Float],
         ys: NDArray[Shape["1, Dim"], Float],
-        labels: NDArray[Shape["1, Dim"], Union[Float, None]],
+        labels: NDArray[Shape["Dim"], String],
         x_label: str,
         y_label: str,
         ) -> Tuple[plt.Figure, plt.Axes]:
