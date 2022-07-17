@@ -1,6 +1,6 @@
 from matplotlib.gridspec import GridSpec
 import matplotlib.pyplot as plt
-from typing import Tuple
+from typing import Tuple, Union
 from nptyping import NDArray, Shape, Float
 
 
@@ -38,12 +38,27 @@ def _single_figure(x_label, y_label) -> Tuple[plt.Figure, plt.Axes]:
     return fig, ax
 
 
+def single_plot(
+        xs: NDArray[Shape["1, Dim"], Float],
+        ys: NDArray[Shape["1, Dim"], Float],
+        labels: NDArray[Shape["1, Dim"], Union[Float, None]],
+        x_label: str,
+        y_label: str,
+        ) -> Tuple[plt.Figure, plt.Axes]:
+    fig: plt.Figure
+    ax: plt.Axes
+    fig, ax = _single_figure(x_label, y_label)
+    for x, y, label in zip(xs, ys, labels):
+        ax.plot(x, y, label=label)
+    return fig, ax
+
+
 def single_pdf(
         r: NDArray[Shape["1"], Float],
         gcalc: NDArray[Shape["1"], Float],
         gobs: NDArray[Shape["1"], Float],
         filepath: str
-        ) -> None:
+        ) -> Tuple[plt.Figure, plt.Axes]:
     fig: plt.Figure
     ax: plt.Axes
     fig, ax = _single_figure(r'G($r$) [-]', r'$r$ [Å]')
@@ -61,5 +76,4 @@ def single_pdf(
     ax.set_xlim(r.min(), r.max())
     ax.legend()
 
-    plt.savefig(f'{filepath}.pdf', dpi=300)
-    plt.savefig(f'{filepath}.png', dpi=300)
+    return fig, ax
