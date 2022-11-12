@@ -1,6 +1,7 @@
 from matplotlib.gridspec import GridSpec
 import matplotlib.pyplot as plt
-from typing import Tuple, Union
+import numpy as np
+from typing import Tuple, Union, List
 from nptyping import NDArray, Shape, Float, String
 
 
@@ -61,7 +62,7 @@ def single_pdf(
         ) -> Tuple[plt.Figure, plt.Axes]:
     fig: plt.Figure
     ax: plt.Axes
-    fig, ax = _single_figure(r'G($r$) [-]', r'$r$ [Å]')
+    fig, ax = _single_figure(r'$r$ [Å]', r'G($r$) [-]')
 
     gdiff: NDArray[Shape["1"], Float] = gobs - gcalc
     span: float = max(gobs.max() - gobs.min(), gcalc.max() - gcalc.min()).max()
@@ -72,8 +73,40 @@ def single_pdf(
     ax.scatter(r, gobs, 10, "C4", lw=0, label='obs', alpha=0.1)
     ax.plot(r, gcalc, '-', label='calc')
     ax.plot(r, gdiff + baseline, '-', label='diff', color='green')
-#    ax.scatter(r, gobs, 'o', label='gobs')
     ax.set_xlim(r.min(), r.max())
     ax.legend()
+
+    return fig, ax
+
+
+def stacked_single_pdf(
+        rs: List[List[Float]],
+        gcalcs: List[List[Float]],
+        gobss: List[List[Float]],
+        names: List[str],
+        filepath: str
+        ) -> Tuple[plt.Figure, plt.Axes]:
+    labels = {'calc': names, 'obs': 'obs', 'diff': 'diff'}
+
+    fig: plt.Figure
+    ax: plt.Axes
+    fig, ax = _single_figure(r'$r$ [Å]', r'G($r$) [-]')
+    global_max = np.max([np.max(gobss), np.max(gcalcs)])
+    global_min = np.min([np.min(gobss), np.min(gcalcs)])
+    for i, (r, gcalc, gobs) in enumerate(zip(rs, gcalcs, gobss)):
+        gdiff: NDArray[Shape["1"], Float] = gobs - gcalc
+        span: float = max(gobs.max() - gobs.min(), gcalc.max() - gcalc.min()).max()
+        baseline: float = min(gobs.min(), gcalc.min()) - span/10
+        shift = (global_max - global_min - baseline) * i  
+        ax.scatter(r, gobs + shift, 11, "0.0", lw=1.5)
+        ax.scatter(r, gobs + shift, 11, "1.0", lw=0)
+        ax.scatter(r, gobs + shift, 10, "C4", lw=0, label=labels['obs'], alpha=0.1)
+        ax.plot(r, gdiff + baseline + shift, '-', label=labels['diff'], color='green')
+        ax.plot(r, gcalc + shift, '-', label=labels['calc'][i])
+        labels = {k: None if type(v) != list else v for k,v in labels.items()}
+    ax.set_xlim(r.min(), r.max())
+
+    handles, labels = plt.gca().get_legend_handles_labels()
+    ax.legend(handles[::-1], labels[::-1], loc='upper right')
 
     return fig, ax
