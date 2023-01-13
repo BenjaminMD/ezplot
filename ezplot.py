@@ -18,25 +18,43 @@ def _plotdefaults(COLS, ROWS) -> Tuple[plt.Figure, GridSpec]:
 
     fig: plt.figure = plt.figure(figsize=(WIDTH, HEIGHT))
     gs: GridSpec = GridSpec(
-            COLS, ROWS, figure=fig,
-            left=0.15, right=0.85,
-            bottom=0.15,  top=0.85,
-            wspace=0.05 / φ, hspace=0.05
-        )
+        COLS, ROWS, figure=fig,
+        left=0.15, right=0.85,
+        bottom=0.15,  top=0.85,
+        wspace=0.05 / φ, hspace=0.05
+    )
 
     return fig, gs
 
 
-def _single_figure(x_label, y_label) -> Tuple[plt.Figure, plt.Axes]:
+def _single_figure(xlabel, ylabel) -> Tuple[plt.Figure, plt.Axes]:
     fig: plt.Figure
     gs: GridSpec
     ax: plt.Axes
     fig, gs = _plotdefaults(1, 1)
     ax = fig.add_subplot(gs[0, 0])
     ax.grid(True)
-    ax.set_xlabel(x_label)
-    ax.set_ylabel(y_label)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
     return fig, ax
+
+
+def _dual_figure() -> Tuple[plt.Figure, plt.Axes]:
+    fig, gs = _plotdefaults(2, 1)
+    ax_left = fig.add_subplot(gs[0, 0])
+    ax_right = fig.add_subplot(gs[1, 0])
+    ax_left.grid(True, zorder=-10.0)
+    axs = (ax_left, ax_right)
+    return fig, axs
+
+
+def _single_dual_axis_figure() -> Tuple[plt.Figure, plt.Axes]:
+    fig, gs = _plotdefaults(1, 1)
+    ax_left = fig.add_subplot(gs[0, 0])
+    ax_left.grid(True, zorder=-10.0)
+    ax_right = ax_left.twinx()
+    axs = (ax_left, ax_right)
+    return fig, axs
 
 
 def single_plot(
@@ -45,7 +63,7 @@ def single_plot(
         labels: NDArray[Shape["Dim"], String],
         x_label: str,
         y_label: str,
-        ) -> Tuple[plt.Figure, plt.Axes]:
+) -> Tuple[plt.Figure, plt.Axes]:
     fig: plt.Figure
     ax: plt.Axes
     fig, ax = _single_figure(x_label, y_label)
@@ -54,12 +72,16 @@ def single_plot(
     return fig, ax
 
 
+def single_plot_dual_axis():
+    fig, ax = _single_figure(r'$r$ [Å]', r'G($r$) [-]')
+
+
 def single_pdf(
         r: NDArray[Shape["1"], Float],
         gcalc: NDArray[Shape["1"], Float],
         gobs: NDArray[Shape["1"], Float],
         filepath: str
-        ) -> Tuple[plt.Figure, plt.Axes]:
+) -> Tuple[plt.Figure, plt.Axes]:
     fig: plt.Figure
     ax: plt.Axes
     fig, ax = _single_figure(r'$r$ [Å]', r'G($r$) [-]')
@@ -85,7 +107,7 @@ def stacked_single_pdf(
         gobss: List[List[Float]],
         names: List[str],
         filepath: str
-        ) -> Tuple[plt.Figure, plt.Axes]:
+) -> Tuple[plt.Figure, plt.Axes]:
     labels = {'calc': names, 'obs': 'obs', 'diff': 'diff'}
 
     fig: plt.Figure
@@ -95,15 +117,18 @@ def stacked_single_pdf(
     global_min = np.min([np.min(gobss), np.min(gcalcs)])
     for i, (r, gcalc, gobs) in enumerate(zip(rs, gcalcs, gobss)):
         gdiff: NDArray[Shape["1"], Float] = gobs - gcalc
-        span: float = max(gobs.max() - gobs.min(), gcalc.max() - gcalc.min()).max()
+        span: float = max(gobs.max() - gobs.min(),
+                          gcalc.max() - gcalc.min()).max()
         baseline: float = min(gobs.min(), gcalc.min()) - span/10
-        shift = (global_max - global_min - baseline) * i  
+        shift = (global_max - global_min - baseline) * i
         ax.scatter(r, gobs + shift, 11, "0.0", lw=1.5)
         ax.scatter(r, gobs + shift, 11, "1.0", lw=0)
-        ax.scatter(r, gobs + shift, 10, "C4", lw=0, label=labels['obs'], alpha=0.1)
-        ax.plot(r, gdiff + baseline + shift, '-', label=labels['diff'], color='green')
+        ax.scatter(r, gobs + shift, 10, "C4", lw=0,
+                   label=labels['obs'], alpha=0.1)
+        ax.plot(r, gdiff + baseline + shift, '-',
+                label=labels['diff'], color='green')
         ax.plot(r, gcalc + shift, '-', label=labels['calc'][i])
-        labels = {k: None if type(v) != list else v for k,v in labels.items()}
+        labels = {k: None if type(v) != list else v for k, v in labels.items()}
     ax.set_xlim(r.min(), r.max())
 
     handles, labels = plt.gca().get_legend_handles_labels()
