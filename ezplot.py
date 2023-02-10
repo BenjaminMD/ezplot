@@ -5,11 +5,11 @@ from typing import Tuple, Union, List
 from nptyping import NDArray, Shape, Float, String
 
 
-def _plotdefaults(COLS, ROWS) -> Tuple[plt.Figure, GridSpec]:
+def _plotdefaults(COLS, ROWS, size=15) -> Tuple[plt.Figure, GridSpec]:
     φ: float = (1 + 5**0.5)/2
     cm: float = 2.54
 
-    WIDTH: float = 15 / cm
+    WIDTH: float = size / cm
     HEIGHT: float = WIDTH / φ
 
     GitHub: str = 'https://raw.githubusercontent.com/BenjaminMD'
