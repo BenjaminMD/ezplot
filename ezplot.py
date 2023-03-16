@@ -5,7 +5,7 @@ from typing import Tuple, Union, List
 from nptyping import NDArray, Shape, Float, String
 
 
-def _plotdefaults(COLS, ROWS, size=15) -> Tuple[plt.Figure, GridSpec]:
+def plotdefaults(COLS, ROWS, size=15) -> Tuple[plt.Figure, GridSpec]:
     φ: float = (1 + 5**0.5)/2
     cm: float = 2.54
 
@@ -27,7 +27,7 @@ def _plotdefaults(COLS, ROWS, size=15) -> Tuple[plt.Figure, GridSpec]:
     return fig, gs
 
 
-def _single_figure(xlabel, ylabel) -> Tuple[plt.Figure, plt.Axes]:
+def single_figure(xlabel, ylabel) -> Tuple[plt.Figure, plt.Axes]:
     fig: plt.Figure
     gs: GridSpec
     ax: plt.Axes
@@ -39,7 +39,7 @@ def _single_figure(xlabel, ylabel) -> Tuple[plt.Figure, plt.Axes]:
     return fig, ax
 
 
-def _dual_figure() -> Tuple[plt.Figure, plt.Axes]:
+def dual_figure() -> Tuple[plt.Figure, plt.Axes]:
     fig, gs = _plotdefaults(2, 1)
     ax_left = fig.add_subplot(gs[0, 0])
     ax_right = fig.add_subplot(gs[1, 0])
@@ -48,7 +48,7 @@ def _dual_figure() -> Tuple[plt.Figure, plt.Axes]:
     return fig, axs
 
 
-def _single_dual_axis_figure() -> Tuple[plt.Figure, plt.Axes]:
+def single_dual_axis_figure() -> Tuple[plt.Figure, plt.Axes]:
     fig, gs = _plotdefaults(1, 1)
     ax_left = fig.add_subplot(gs[0, 0])
     ax_left.grid(True, zorder=-10.0)
