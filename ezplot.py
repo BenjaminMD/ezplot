@@ -53,6 +53,11 @@ def create_dual_plot(xlabel, y1label, y2label, y2color='red'):
     return fig, ax_main, ax_right
 
 
+def reverse_legend(ax, loc='upper left'):
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles[::-1], labels[::-1], loc=loc)
+
+
 def gather_legend(axs):
     handles, labels = zip(*[ax.get_legend_handles_labels() for ax in axs])
     handles = np.concatenate(handles)
@@ -80,4 +85,10 @@ def ctwinx(ax_main, color, ylabel):
     ax_r.tick_params(axis='y', colors=color)
     return ax_r
 
+
+def scatter_w_outline(ax, x, y, label):
+    ax.scatter(x, y, 36, "0.0", lw=1.5)
+    ax.scatter(x, y, 36, "1.0", lw=0)
+    ax.scatter(x, y, 35, "#f6a800", lw=0, alpha=0.1725)
+    ax.scatter([], [], 80, "#f6a800", lw=0, label=label)
 
