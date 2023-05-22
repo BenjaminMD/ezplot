@@ -2,6 +2,7 @@ from typing import Tuple  # type: ignore
 
 from matplotlib.gridspec import GridSpec  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
+import matplotlib.cm as cm
 import numpy as np  # type: ignore
 
 
@@ -53,9 +54,9 @@ def create_dual_plot(xlabel, y1label, y2label, y2color='red'):
     return fig, ax_main, ax_right
 
 
-def reverse_legend(ax, loc='upper left'):
+def reverse_legend(ax, loc='upper left', **kwargs):
     handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles[::-1], labels[::-1], loc=loc)
+    ax.legend(handles[::-1], labels[::-1], loc=loc, **kwargs)
 
 
 def gather_legend(axs):
@@ -86,9 +87,32 @@ def ctwinx(ax_main, color, ylabel):
     return ax_r
 
 
-def scatter_w_outline(ax, x, y, label):
+def scatter_w_outline(ax, x, y, label, color='#f6a800'):
     ax.scatter(x, y, 36, "0.0", lw=1.5)
     ax.scatter(x, y, 36, "1.0", lw=0)
-    ax.scatter(x, y, 35, "#f6a800", lw=0, alpha=0.1725)
-    ax.scatter([], [], 80, "#f6a800", lw=0, label=label)
+    ax.scatter(x, y, 35, color, lw=0, alpha=0.1725)
+    ax.scatter([], [], 80, color, lw=0, label=label)
+    return ax
 
+
+def get_color_mapper(vmin, vmax, cmap_name='viridis'):
+    """
+    Returns a callable object that maps values to colors using an inbuilt colormap from matplotlib.
+
+    Args:
+    vmin (float): the lower limit of the colormap.
+    vmax (float): the upper limit of the colormap.
+    cmap_name (str): the name of the colormap to use.
+
+    Returns:
+    A callable object that maps scalar values to RGBA colors within the colormap.
+    """
+    cmap = cm.get_cmap(cmap_name)
+    norm = plt.Normalize(vmin, vmax)
+    mapper = cm.ScalarMappable(norm=norm, cmap=cmap)
+
+    def map_color(value):
+        color = mapper.to_rgba(value)
+        return color
+
+    return map_color
