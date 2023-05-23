@@ -1,1 +1,1 @@
-from .ezplot import single_pdf, single_plot, _single_dual_axis_figure, _single_figure, _dual_figure, _plotdefaults
+from .ezplot import create_basic_plot, plot_defaults, scatter_w_outline, reverse_legend, get_color_mapper
