@@ -73,11 +73,7 @@ def create_dual_plot(xlabel, y1label, y2label, y2color="red"):
     return fig, ax_main, ax_right
 
 
-<<<<<<< HEAD
 def reverse_legend(ax, loc='upper left', **kwargs):
-=======
-def reverse_legend(ax, loc="upper left"):
->>>>>>> b9ffeefccf477b3a22d742783260505f80c2daa9
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles[::-1], labels[::-1], loc=loc, **kwargs)
 
@@ -110,17 +106,12 @@ def ctwinx(ax_main, color, ylabel) -> plt.Axes:
     return ax_r
 
 
-<<<<<<< HEAD
 def scatter_w_outline(ax, x, y, label, color='#f6a800'):
-=======
-def scatter_w_outline(ax, x, y, label, color="#f6a800"):
->>>>>>> b9ffeefccf477b3a22d742783260505f80c2daa9
-    ax.scatter(x, y, 36, "0.0", lw=1.5)
-    ax.scatter(x, y, 36, "1.0", lw=0)
-    ax.scatter(x, y, 35, color, lw=0, alpha=0.1725)
-    ax.scatter([], [], 80, color, lw=0, label=label)
+    ax.scatter(x, y, 9, "0.0", lw=1.5)
+    ax.scatter(x, y, 9, "1.0", lw=0)
+    ax.scatter(x, y, 8, color, lw=0, alpha=0.25)
+    ax.scatter([], [], 60, color, lw=0, label=label, alpha=0.7)
     return ax
-<<<<<<< HEAD
 
 
 def get_color_mapper(vmin, vmax, cmap_name='viridis'):
@@ -144,5 +135,3 @@ def get_color_mapper(vmin, vmax, cmap_name='viridis'):
         return color
 
     return map_color
-=======
->>>>>>> b9ffeefccf477b3a22d742783260505f80c2daa9
