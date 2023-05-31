@@ -105,12 +105,34 @@ def ctwinx(ax_main, color, ylabel) -> plt.Axes:
     ax_r.tick_params(axis="y", colors=color)
     return ax_r
 
+def hex_to_rgba(hex_color, alpha=1.0):
+    """Converts a hex color code to RGBA.
+    Parameters:
+    -----------
+    hex_color : str
+        The hex color code to convert.
+    alpha : float
+        The alpha value to use for the RGBA color.
+    Returns:
+    --------
+    rgba : tuple
+        The RGBA color code.
+    """
+    hex_color = hex_color.lstrip("#")
+    hlen = len(hex_color)
+    rgba = tuple(int(hex_color[i:i + hlen // 3], 16)
+                 for i in range(0, hlen, hlen // 3))
+    rgba = rgba + (255*alpha,)
+    rgba = tuple([x / 255 for x in rgba])
+    return rgba
 
-def scatter_w_outline(ax, x, y, label, color='#f6a800'):
-    ax.scatter(x, y, 9, "0.0", lw=1.5)
-    ax.scatter(x, y, 9, "1.0", lw=0)
-    ax.scatter(x, y, 8, color, lw=0, alpha=0.25)
-    ax.scatter([], [], 60, color, lw=0, label=label, alpha=0.7)
+
+def scatter_w_outline(ax, x, y, label, color="#f6a800"):#'#f6a800'):
+    ax.scatter(x, y, 7, "0.0", lw=1.5)
+    ax.scatter(x, y, 7, "1.0", lw=0)
+    ax.scatter(x, y, 6, color, lw=0, alpha=0.25)
+    c_rgba = hex_to_rgba(color, 0.7)
+    ax.scatter([], [], 40, fc=c_rgba, lw=1.0, label=label, ec=(0, 0, 0, 1))
     return ax
 
 
@@ -131,7 +153,7 @@ def get_color_mapper(vmin, vmax, cmap_name='viridis'):
     mapper = cm.ScalarMappable(norm=norm, cmap=cmap)
 
     def map_color(value):
-        color = mapper.to_rgba(value)
+        color = mapper.to_rgba(value)#9900ff
         return color
 
     return map_color
